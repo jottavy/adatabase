@@ -1,37 +1,49 @@
--- 1. SUPPRESSION DES TABLES (Du Niveau 3 au Niveau 0)
+-- ============================================================================
+-- 1. SUPPRESSION DES TABLES (Ordre inverse des dépendances)
+-- ============================================================================
 
--- Niveau 3 (Tables d'association / dépendantes)
-DROP TABLE IF EXISTS InscriptionAtelier;
+-------------------------------------------------------------------------------
+-- NIVEAU 3 : Tables de liaison complexes et interventions
+-------------------------------------------------------------------------------
+DROP TABLE IF EXISTS InscriptionAtelier CASCADE;
 
-DROP TABLE IF EXISTS CompetenceBenevole;
+DROP TABLE IF EXISTS Reparation CASCADE;
 
--- Niveau 2 (Tables dépendant du Niveau 1 ou 2)
-DROP TABLE IF EXISTS Reparation;
+-------------------------------------------------------------------------------
+-- NIVEAU 2 : Tables dépendantes des Niveaux 0 et 1
+-------------------------------------------------------------------------------
+DROP TABLE IF EXISTS CompetenceBenevole CASCADE;
 
-DROP TABLE IF EXISTS Objet;
+DROP TABLE IF EXISTS Objet CASCADE;
 
-DROP TABLE IF EXISTS Atelier;
+DROP TABLE IF EXISTS Atelier CASCADE;
 
--- Niveau 1 (Tables dépendant du Niveau 0)
-DROP TABLE IF EXISTS Depot;
+-------------------------------------------------------------------------------
+-- NIVEAU 1 : Tables dépendantes du Niveau 0
+-------------------------------------------------------------------------------
+DROP TABLE IF EXISTS Depot CASCADE;
 
-DROP TABLE IF EXISTS Benevole;
+DROP TABLE IF EXISTS Benevole CASCADE;
 
--- Niveau 0 (Tables de base)
-DROP TABLE IF EXISTS Personne;
+-------------------------------------------------------------------------------
+-- NIVEAU 0 : Tables indépendantes
+-------------------------------------------------------------------------------
+DROP TABLE IF EXISTS Personne CASCADE;
 
-DROP TABLE IF EXISTS Vente;
+DROP TABLE IF EXISTS Vente CASCADE;
 
-DROP TABLE IF EXISTS Competence;
+DROP TABLE IF EXISTS Competence CASCADE;
 
-DROP TABLE IF EXISTS Categorie;
+DROP TABLE IF EXISTS Categorie CASCADE;
 
--- 2. SUPPRESSION DES ÉNUMÉRATIONS (ENUM)
+-- ============================================================================
+-- 2. SUPPRESSION DES ÉNUMÉRATIONS (Types personnalisés)
+-- ============================================================================
 
-DROP TYPE IF EXISTS mode_paiement_enum;
+DROP TYPE IF EXISTS mode_paiement_enum CASCADE;
 
-DROP TYPE IF EXISTS objet_etat_enum;
+DROP TYPE IF EXISTS objet_etat_enum CASCADE;
 
-DROP TYPE IF EXISTS statut_objet_enum;
+DROP TYPE IF EXISTS statut_objet_enum CASCADE;
 
-DROP TYPE IF EXISTS type_depot_enum;
+DROP TYPE IF EXISTS type_depot_enum CASCADE;

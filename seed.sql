@@ -1,8 +1,24 @@
 -- ============================================================================
+-- NETTOYAGE DES DONNÉES EXISTANTES
+-- ============================================================================
+
+TRUNCATE TABLE InscriptionAtelier,
+Reparation,
+Objet,
+CompetenceBenevole,
+Atelier,
+Depot,
+Benevole,
+Vente,
+Personne,
+Competence,
+Categorie RESTART IDENTITY CASCADE;
+
+-- ============================================================================
 -- NIVEAU 0 : Tables sans dépendances
 -- ============================================================================
 
--- Catégories (10 insérées pour 8 minimum)
+-- Catégories
 INSERT INTO
     Categorie (categorie_nom)
 VALUES ('Meubles'),
@@ -26,7 +42,7 @@ VALUES ('Électricité'),
     ('Mécanique vélo'),
     ('Plomberie');
 
--- Personnes (15 insérées pour 10 minimum)
+-- Personnes
 INSERT INTO
     Personne (
         personne_nom,
@@ -125,7 +141,7 @@ VALUES (
         TRUE
     );
 
--- Ventes (12 insérées pour 10 minimum)
+-- Ventes
 INSERT INTO
     Vente (
         vente_date,
@@ -184,7 +200,7 @@ VALUES (
 -- NIVEAU 1 : Bénévoles et Dépôts
 -- ============================================================================
 
--- Bénévoles (12 insérés - reliés aux personnes de 1 à 12, respecte l'unicité)
+-- Bénévoles
 INSERT INTO
     Benevole (
         personne_id,
@@ -193,17 +209,17 @@ INSERT INTO
 VALUES (1, '2026-01-10 09:00:00'),
     (2, '2026-01-12 10:00:00'),
     (3, '2026-01-15 14:00:00'),
+    (4, '2026-01-20 11:00:00'),
     (5, '2026-02-01 11:00:00'),
     (6, '2026-02-05 09:30:00'),
+    (7, '2026-02-08 14:00:00'),
     (8, '2026-02-10 15:00:00'),
     (9, '2026-03-01 10:00:00'),
+    (10, '2026-03-10 16:00:00'),
     (11, '2026-03-15 14:30:00'),
-    (12, '2026-04-02 09:00:00'),
-    (13, '2026-04-10 11:15:00'),
-    (15, '2026-05-01 16:00:00'),
-    (4, '2026-05-15 10:00:00');
+    (12, '2026-04-02 09:00:00');
 
--- Dépôts (8 insérés)
+-- Dépôts
 INSERT INTO
     Depot (
         depot_type,
@@ -255,7 +271,7 @@ VALUES (
 -- NIVEAU 2 : Ateliers, Compétences Bénévoles, Objets
 -- ============================================================================
 
--- Ateliers (5 insérés pour 4 minimum)
+-- Ateliers
 INSERT INTO
     Atelier (
         atelier_nom,
@@ -300,7 +316,7 @@ VALUES (
         5
     );
 
--- CompetenceBenevole (Clé primaire composée)
+-- CompetenceBenevole
 INSERT INTO
     CompetenceBenevole (competence_id, benevole_id)
 VALUES (1, 1),
@@ -315,11 +331,12 @@ VALUES (1, 1),
     (3, 7),
     (4, 8);
 
--- Objets (50 insérés pour 40 minimum)
+-- Objets
 INSERT INTO
     Objet (
         objet_nom,
         objet_etat,
+        objet_poids,
         objet_statut,
         objet_prix,
         vente_prix_final,
@@ -327,11 +344,10 @@ INSERT INTO
         categorie_id,
         vente_id
     )
-VALUES
-    -- Objets VENDUS (liés à des ventes)
-    (
+VALUES (
         'Chaise en chêne',
         'Bon état',
+        5.50,
         'Vendu',
         25.00,
         20.00,
@@ -342,6 +358,7 @@ VALUES
     (
         'Grille-pain Vintage',
         'À réparer',
+        1.20,
         'Vendu',
         10.00,
         10.00,
@@ -352,6 +369,7 @@ VALUES
     (
         'Veste en cuir',
         'Bon état',
+        1.80,
         'Vendu',
         30.00,
         30.00,
@@ -362,6 +380,7 @@ VALUES
     (
         'Micro-ondes',
         'Bon état',
+        12.00,
         'Vendu',
         35.00,
         30.00,
@@ -372,6 +391,7 @@ VALUES
     (
         'Lot de 5 assiettes',
         'Bon état',
+        2.50,
         'Vendu',
         8.00,
         8.00,
@@ -382,6 +402,7 @@ VALUES
     (
         'VTT Homme',
         'À réparer',
+        14.00,
         'Vendu',
         45.00,
         40.00,
@@ -390,8 +411,9 @@ VALUES
         6
     ),
     (
-        'Manteau d hiver',
+        'Manteau d''hiver',
         'Bon état',
+        2.00,
         'Vendu',
         20.00,
         20.00,
@@ -402,6 +424,7 @@ VALUES
     (
         'Encyclopédie 10 vol',
         'Bon état',
+        8.50,
         'Vendu',
         15.00,
         12.00,
@@ -412,6 +435,7 @@ VALUES
     (
         'Jeu de construction',
         'Bon état',
+        1.10,
         'Vendu',
         12.00,
         10.00,
@@ -422,6 +446,7 @@ VALUES
     (
         'Miroir doré',
         'Bon état',
+        4.00,
         'Vendu',
         25.00,
         25.00,
@@ -432,6 +457,7 @@ VALUES
     (
         'Écran PC 24 pouces',
         'Bon état',
+        3.80,
         'Vendu',
         40.00,
         35.00,
@@ -442,6 +468,7 @@ VALUES
     (
         'Chaise de bureau',
         'Bon état',
+        7.00,
         'Vendu',
         18.00,
         15.00,
@@ -449,400 +476,430 @@ VALUES
         1,
         12
     ),
-
--- Objets EN RAYON (vente_id = NULL)
-(
-    'Table basse verre',
-    'Bon état',
-    'En rayon',
-    40.00,
-    NULL,
-    2,
-    1,
-    NULL
-),
-(
-    'Roman SF Lot',
-    'Bon état',
-    'En rayon',
-    5.00,
-    NULL,
-    3,
-    4,
-    NULL
-),
-(
-    'Machine à café',
-    'Bon état',
-    'En rayon',
-    18.00,
-    NULL,
-    1,
-    2,
-    NULL
-),
-(
-    'Canapé 2 places',
-    'Bon état',
-    'En rayon',
-    80.00,
-    NULL,
-    2,
-    1,
-    NULL
-),
-(
-    'BD Tintin T1',
-    'Bon état',
-    'En rayon',
-    4.00,
-    NULL,
-    3,
-    4,
-    NULL
-),
-(
-    'Perceuse filaire',
-    'À réparer',
-    'En rayon',
-    15.00,
-    NULL,
-    1,
-    7,
-    NULL
-),
-(
-    'Lampe de chevet',
-    'Bon état',
-    'En rayon',
-    10.00,
-    NULL,
-    2,
-    8,
-    NULL
-),
-(
-    'Robot pâtissier',
-    'Bon état',
-    'En rayon',
-    50.00,
-    NULL,
-    3,
-    2,
-    NULL
-),
-(
-    'Jeu Monopoly',
-    'Bon état',
-    'En rayon',
-    8.00,
-    NULL,
-    1,
-    5,
-    NULL
-),
-(
-    'Trieur en bois',
-    'Bon état',
-    'En rayon',
-    12.00,
-    NULL,
-    2,
-    1,
-    NULL
-),
-(
-    'Veste de pluie',
-    'Bon état',
-    'En rayon',
-    14.00,
-    NULL,
-    3,
-    3,
-    NULL
-),
-(
-    'Lot de verres',
-    'Bon état',
-    'En rayon',
-    6.00,
-    NULL,
-    1,
-    6,
-    NULL
-),
-(
-    'Radiateur bain d huile',
-    'Bon état',
-    'En rayon',
-    22.00,
-    NULL,
-    2,
-    2,
-    NULL
-),
-(
-    'Poupée ancienne',
-    'Bon état',
-    'En rayon',
-    15.00,
-    NULL,
-    3,
-    5,
-    NULL
-),
-(
-    'Clavier USB',
-    'Bon état',
-    'En rayon',
-    7.00,
-    NULL,
-    4,
-    9,
-    NULL
-),
-(
-    'Souris sans fil',
-    'Bon état',
-    'En rayon',
-    5.00,
-    NULL,
-    4,
-    9,
-    NULL
-),
-(
-    'Ressort de musculation',
-    'Bon état',
-    'En rayon',
-    6.00,
-    NULL,
-    5,
-    10,
-    NULL
-),
-(
-    'Livre de recettes',
-    'Bon état',
-    'En rayon',
-    4.00,
-    NULL,
-    6,
-    4,
-    NULL
-),
-(
-    'Vase en céramique',
-    'Bon état',
-    'En rayon',
-    9.00,
-    NULL,
-    7,
-    8,
-    NULL
-),
-(
-    'Étagère métallique',
-    'Bon état',
-    'En rayon',
-    20.00,
-    NULL,
-    8,
-    1,
-    NULL
-),
-(
-    ' Jean Levi s',
-    'Bon état',
-    'En rayon',
-    16.00,
-    NULL,
-    1,
-    3,
-    NULL
-),
-
--- Objets EN RÉPARATION (vente_id = NULL)
-(
-    'Aspirateur sans sac',
-    'À réparer',
-    'En réparation',
-    15.00,
-    NULL,
-    1,
-    2,
-    NULL
-),
-(
-    'Grille-pain inox',
-    'À réparer',
-    'En réparation',
-    8.00,
-    NULL,
-    1,
-    2,
-    NULL
-),
-(
-    'Chaise pliante bois',
-    'À réparer',
-    'En réparation',
-    5.00,
-    NULL,
-    2,
-    1,
-    NULL
-),
-(
-    'Vélo enfant',
-    'À réparer',
-    'En réparation',
-    18.00,
-    NULL,
-    3,
-    10,
-    NULL
-),
-(
-    'Machine à coudre',
-    'À réparer',
-    'En réparation',
-    30.00,
-    NULL,
-    1,
-    2,
-    NULL
-),
-(
-    'Paire d enceintes',
-    'À réparer',
-    'En réparation',
-    25.00,
-    NULL,
-    2,
-    2,
-    NULL
-),
-(
-    'Horloge comtoise',
-    'À réparer',
-    'En réparation',
-    60.00,
-    NULL,
-    3,
-    8,
-    NULL
-),
-(
-    'Tondeuse électrique',
-    'À réparer',
-    'En réparation',
-    35.00,
-    NULL,
-    4,
-    7,
-    NULL
-),
-(
-    'Imprimante HP',
-    'À réparer',
-    'En réparation',
-    12.00,
-    NULL,
-    5,
-    9,
-    NULL
-),
-(
-    'Sèche-cheveux',
-    'À réparer',
-    'En réparation',
-    6.00,
-    NULL,
-    6,
-    2,
-    NULL
-),
-
--- Objets ARRIVÉS (vente_id = NULL)
-(
-    'Lot de t-shirts',
-    'Bon état',
-    'Arrivé',
-    10.00,
-    NULL,
-    1,
-    3,
-    NULL
-),
-(
-    'Cafetière filtre',
-    'À réparer',
-    'Arrivé',
-    5.00,
-    NULL,
-    2,
-    2,
-    NULL
-),
-(
-    'Sécateur jardin',
-    'Bon état',
-    'Arrivé',
-    7.00,
-    NULL,
-    3,
-    7,
-    NULL
-),
-(
-    'BD Asterix',
-    'Bon état',
-    'Arrivé',
-    3.00,
-    NULL,
-    1,
-    4,
-    NULL
-),
-
--- Objets RECYCLÉS (vente_id = NULL)
-(
-    'Lecteur DVD HS',
-    'Hors service',
-    'Recyclé',
-    0.00,
-    NULL,
-    2,
-    2,
-    NULL
-),
-(
-    'Sèche-cheveux brûlé',
-    'Hors service',
-    'Recyclé',
-    0.00,
-    NULL,
-    3,
-    2,
-    NULL
-),
-(
-    'Meuble cassé',
-    'Hors service',
-    'Recyclé',
-    0.00,
-    NULL,
-    1,
-    1,
-    NULL
-);
+    (
+        'Table basse verre',
+        'Bon état',
+        15.00,
+        'En rayon',
+        40.00,
+        NULL,
+        2,
+        1,
+        NULL
+    ),
+    (
+        'Roman SF Lot',
+        'Bon état',
+        0.90,
+        'En rayon',
+        5.00,
+        NULL,
+        3,
+        4,
+        NULL
+    ),
+    (
+        'Machine à café',
+        'Bon état',
+        3.20,
+        'En rayon',
+        18.00,
+        NULL,
+        1,
+        2,
+        NULL
+    ),
+    (
+        'Canapé 2 places',
+        'Bon état',
+        35.00,
+        'En rayon',
+        80.00,
+        NULL,
+        2,
+        1,
+        NULL
+    ),
+    (
+        'BD Tintin T1',
+        'Bon état',
+        0.40,
+        'En rayon',
+        4.00,
+        NULL,
+        3,
+        4,
+        NULL
+    ),
+    (
+        'Perceuse filaire',
+        'À réparer',
+        2.30,
+        'En rayon',
+        15.00,
+        NULL,
+        1,
+        7,
+        NULL
+    ),
+    (
+        'Lampe de chevet',
+        'Bon état',
+        1.10,
+        'En rayon',
+        10.00,
+        NULL,
+        2,
+        8,
+        NULL
+    ),
+    (
+        'Robot pâtissier',
+        'Bon état',
+        6.50,
+        'En rayon',
+        50.00,
+        NULL,
+        3,
+        2,
+        NULL
+    ),
+    (
+        'Jeu Monopoly',
+        'Bon état',
+        1.00,
+        'En rayon',
+        8.00,
+        NULL,
+        1,
+        5,
+        NULL
+    ),
+    (
+        'Trieur en bois',
+        'Bon état',
+        2.00,
+        'En rayon',
+        12.00,
+        NULL,
+        2,
+        1,
+        NULL
+    ),
+    (
+        'Veste de pluie',
+        'Bon état',
+        0.70,
+        'En rayon',
+        14.00,
+        NULL,
+        3,
+        3,
+        NULL
+    ),
+    (
+        'Lot de verres',
+        'Bon état',
+        1.80,
+        'En rayon',
+        6.00,
+        NULL,
+        1,
+        6,
+        NULL
+    ),
+    (
+        'Radiateur bain d''huile',
+        'Bon état',
+        9.00,
+        'En rayon',
+        22.00,
+        NULL,
+        2,
+        2,
+        NULL
+    ),
+    (
+        'Poupée ancienne',
+        'Bon état',
+        0.60,
+        'En rayon',
+        15.00,
+        NULL,
+        3,
+        5,
+        NULL
+    ),
+    (
+        'Clavier USB',
+        'Bon état',
+        0.80,
+        'En rayon',
+        7.00,
+        NULL,
+        4,
+        9,
+        NULL
+    ),
+    (
+        'Souris sans fil',
+        'Bon état',
+        0.20,
+        'En rayon',
+        5.00,
+        NULL,
+        4,
+        9,
+        NULL
+    ),
+    (
+        'Ressort de musculation',
+        'Bon état',
+        1.50,
+        'En rayon',
+        6.00,
+        NULL,
+        5,
+        10,
+        NULL
+    ),
+    (
+        'Livre de recettes',
+        'Bon état',
+        0.80,
+        'En rayon',
+        4.00,
+        NULL,
+        6,
+        4,
+        NULL
+    ),
+    (
+        'Vase en céramique',
+        'Bon état',
+        1.30,
+        'En rayon',
+        9.00,
+        NULL,
+        7,
+        8,
+        NULL
+    ),
+    (
+        'Étagère métallique',
+        'Bon état',
+        11.00,
+        'En rayon',
+        20.00,
+        NULL,
+        8,
+        1,
+        NULL
+    ),
+    (
+        'Jean Levis',
+        'Bon état',
+        0.60,
+        'En rayon',
+        16.00,
+        NULL,
+        1,
+        3,
+        NULL
+    ),
+    (
+        'Aspirateur sans sac',
+        'À réparer',
+        5.00,
+        'En réparation',
+        15.00,
+        NULL,
+        1,
+        2,
+        NULL
+    ),
+    (
+        'Grille-pain inox',
+        'À réparer',
+        1.40,
+        'En réparation',
+        8.00,
+        NULL,
+        1,
+        2,
+        NULL
+    ),
+    (
+        'Chaise pliante bois',
+        'À réparer',
+        3.00,
+        'En réparation',
+        5.00,
+        NULL,
+        2,
+        1,
+        NULL
+    ),
+    (
+        'Vélo enfant',
+        'À réparer',
+        8.50,
+        'En réparation',
+        18.00,
+        NULL,
+        3,
+        10,
+        NULL
+    ),
+    (
+        'Machine à coudre',
+        'À réparer',
+        7.00,
+        'En réparation',
+        30.00,
+        NULL,
+        1,
+        2,
+        NULL
+    ),
+    (
+        'Paire d''enceintes',
+        'À réparer',
+        4.50,
+        'En réparation',
+        25.00,
+        NULL,
+        2,
+        2,
+        NULL
+    ),
+    (
+        'Horloge comtoise',
+        'À réparer',
+        25.00,
+        'En réparation',
+        60.00,
+        NULL,
+        3,
+        8,
+        NULL
+    ),
+    (
+        'Tondeuse électrique',
+        'À réparer',
+        12.00,
+        'En réparation',
+        35.00,
+        NULL,
+        4,
+        7,
+        NULL
+    ),
+    (
+        'Imprimante HP',
+        'À réparer',
+        6.00,
+        'En réparation',
+        12.00,
+        NULL,
+        5,
+        9,
+        NULL
+    ),
+    (
+        'Sèche-cheveux',
+        'À réparer',
+        0.70,
+        'En réparation',
+        6.00,
+        NULL,
+        6,
+        2,
+        NULL
+    ),
+    (
+        'Lot de t-shirts',
+        'Bon état',
+        1.20,
+        'Arrivé',
+        10.00,
+        NULL,
+        1,
+        3,
+        NULL
+    ),
+    (
+        'Cafetière filtre',
+        'À réparer',
+        1.80,
+        'Arrivé',
+        5.00,
+        NULL,
+        2,
+        2,
+        NULL
+    ),
+    (
+        'Sécateur jardin',
+        'Bon état',
+        0.50,
+        'Arrivé',
+        7.00,
+        NULL,
+        3,
+        7,
+        NULL
+    ),
+    (
+        'BD Asterix',
+        'Bon état',
+        0.40,
+        'Arrivé',
+        3.00,
+        NULL,
+        1,
+        4,
+        NULL
+    ),
+    (
+        'Lecteur DVD HS',
+        'Hors service',
+        2.00,
+        'Recyclé',
+        0.00,
+        NULL,
+        2,
+        2,
+        NULL
+    ),
+    (
+        'Sèche-cheveux brûlé',
+        'Hors service',
+        0.60,
+        'Recyclé',
+        0.00,
+        NULL,
+        3,
+        2,
+        NULL
+    ),
+    (
+        'Meuble cassé',
+        'Hors service',
+        18.00,
+        'Recyclé',
+        0.00,
+        NULL,
+        1,
+        1,
+        NULL
+    );
 
 -- ============================================================================
 -- NIVEAU 3 : Réparations et Inscriptions
 -- ============================================================================
 
--- Réparations (18 insérées pour 15 minimum)
+-- Réparations
 INSERT INTO
     Reparation (
         reparation_date_debut,
@@ -978,7 +1035,7 @@ VALUES (
         49
     );
 
--- Inscriptions aux ateliers (12 insérées)
+-- Inscriptions aux ateliers
 INSERT INTO
     InscriptionAtelier (
         personne_id,
