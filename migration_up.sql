@@ -62,6 +62,7 @@ CREATE TABLE Objet (
     objet_id SERIAL PRIMARY KEY,
     objet_nom VARCHAR(100) NOT NULL,
     objet_etat objet_etat_enum NOT NULL,
+    objet_poids NUMERIC(10, 2) NOT NULL,
     objet_statut statut_objet_enum NOT NULL,
     objet_prix NUMERIC(10, 2) NOT NULL,
     objet_date_rayon TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
