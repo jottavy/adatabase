@@ -217,7 +217,6 @@ VALUES (1, '2026-01-10 09:00:00'),
     (8, '2026-02-10 15:00:00');
 
 -- Dépôts
--- Note : Jean Dupont (personne_id = 1) a effectué 4 dépôts distincts
 INSERT INTO
     Depot (
         depot_type,
@@ -226,14 +225,14 @@ INSERT INTO
     )
 VALUES (
         'Boutique',
-        '2026-01-10 10:00:00',
+        '2025-09-10 10:00:00',
         1
-    ), -- Dépôt ancien (> 6 mois)
+    ), -- Dépôt très ancien
     (
         'Boutique',
         '2026-07-01 10:00:00',
         1
-    ), -- Dépôt du mois dernier (Juillet)
+    ), -- Dépôt du mois dernier
     (
         'Domicile',
         '2026-07-02 14:00:00',
@@ -273,13 +272,12 @@ VALUES (
         'Boutique',
         '2026-08-01 09:00:00',
         1
-    ), -- 3e dépôt Dupont
+    ),
     (
         'Boutique',
         '2026-08-05 14:00:00',
         1
     );
--- 4e dépôt Dupont
 
 -- ============================================================================
 -- NIVEAU 2 : Ateliers, Compétences Bénévoles, Objets
@@ -331,7 +329,6 @@ VALUES (
     );
 
 -- CompétenceBenevole
--- Compétence 1 = Électricité (attribuée aux bénévoles 1 et 6)
 INSERT INTO
     CompetenceBenevole (competence_id, benevole_id)
 VALUES (1, 1),
@@ -346,7 +343,7 @@ VALUES (1, 1),
     (3, 7),
     (4, 8);
 
--- Objets
+-- Objets (avec colonne objet_date_rayon)
 INSERT INTO
     Objet (
         objet_nom,
@@ -354,17 +351,20 @@ INSERT INTO
         objet_poids,
         objet_statut,
         objet_prix,
+        objet_date_rayon,
         vente_prix_final,
         depot_id,
         categorie_id,
         vente_id
     )
-VALUES (
+VALUES
+    (
         'Chaise en chêne',
         'Bon état',
         5.50,
         'Vendu',
         25.00,
+        '2026-07-02',
         20.00,
         2,
         1,
@@ -376,6 +376,7 @@ VALUES (
         1.20,
         'Vendu',
         10.00,
+        '2026-07-05',
         10.00,
         2,
         2,
@@ -387,6 +388,7 @@ VALUES (
         1.80,
         'Vendu',
         30.00,
+        '2026-07-10',
         30.00,
         3,
         3,
@@ -398,6 +400,7 @@ VALUES (
         12.00,
         'Vendu',
         35.00,
+        '2026-06-15',
         30.00,
         2,
         2,
@@ -409,6 +412,7 @@ VALUES (
         2.50,
         'Vendu',
         8.00,
+        '2026-07-12',
         8.00,
         3,
         6,
@@ -420,6 +424,7 @@ VALUES (
         14.00,
         'Vendu',
         45.00,
+        '2026-07-15',
         40.00,
         4,
         10,
@@ -431,6 +436,7 @@ VALUES (
         2.00,
         'Vendu',
         20.00,
+        '2026-07-02',
         20.00,
         2,
         3,
@@ -442,6 +448,7 @@ VALUES (
         8.50,
         'Vendu',
         15.00,
+        '2026-05-10',
         12.00,
         3,
         4,
@@ -453,6 +460,7 @@ VALUES (
         1.10,
         'Vendu',
         12.00,
+        '2026-07-20',
         10.00,
         4,
         5,
@@ -464,6 +472,7 @@ VALUES (
         4.00,
         'Vendu',
         25.00,
+        '2026-07-01',
         25.00,
         2,
         8,
@@ -475,6 +484,7 @@ VALUES (
         3.80,
         'Vendu',
         40.00,
+        '2026-07-25',
         35.00,
         5,
         9,
@@ -486,193 +496,210 @@ VALUES (
         7.00,
         'Vendu',
         18.00,
+        '2026-07-28',
         15.00,
         6,
         1,
         12
     ),
-    (
-        'Armoire ancienne',
-        'Bon état',
-        45.00,
-        'En rayon',
-        120.00,
-        NULL,
-        1,
-        1,
-        NULL
-    ),
-    (
-        'Secrétaire en teck',
-        'Bon état',
-        28.00,
-        'En rayon',
-        90.00,
-        NULL,
-        1,
-        1,
-        NULL
-    ),
-    (
-        'Table basse verre',
-        'Bon état',
-        15.00,
-        'En rayon',
-        40.00,
-        NULL,
-        3,
-        1,
-        NULL
-    ),
-    (
-        'Roman SF Lot',
-        'Bon état',
-        0.90,
-        'En rayon',
-        5.00,
-        NULL,
-        4,
-        4,
-        NULL
-    ),
-    (
-        'Machine à café',
-        'Bon état',
-        3.20,
-        'En rayon',
-        18.00,
-        NULL,
-        2,
-        2,
-        NULL
-    ),
-    (
-        'Canapé 2 places',
-        'Bon état',
-        35.00,
-        'En rayon',
-        80.00,
-        NULL,
-        3,
-        1,
-        NULL
-    ),
-    (
-        'BD Tintin T1',
-        'Bon état',
-        0.40,
-        'En rayon',
-        4.00,
-        NULL,
-        4,
-        4,
-        NULL
-    ),
-    (
-        'Perceuse filaire',
-        'À réparer',
-        2.30,
-        'En rayon',
-        15.00,
-        NULL,
-        2,
-        7,
-        NULL
-    ),
-    (
-        'Lampe de chevet',
-        'Bon état',
-        1.10,
-        'En rayon',
-        10.00,
-        NULL,
-        3,
-        8,
-        NULL
-    ),
-    (
-        'Robot pâtissier',
-        'Bon état',
-        6.50,
-        'En rayon',
-        50.00,
-        NULL,
-        4,
-        2,
-        NULL
-    ),
-    (
-        'Jeu Monopoly',
-        'Bon état',
-        1.00,
-        'En rayon',
-        8.00,
-        NULL,
-        2,
-        5,
-        NULL
-    ),
-    (
-        'Trieur en bois',
-        'Bon état',
-        2.00,
-        'En rayon',
-        12.00,
-        NULL,
-        3,
-        1,
-        NULL
-    ),
-    (
-        'Aspirateur sans sac',
-        'À réparer',
-        5.00,
-        'En réparation',
-        15.00,
-        NULL,
-        2,
-        2,
-        NULL
-    ),
-    (
-        'Grille-pain inox',
-        'À réparer',
-        1.40,
-        'En réparation',
-        8.00,
-        NULL,
-        2,
-        2,
-        NULL
-    ),
-    (
-        'Sèche-cheveux brûlé',
-        'Hors service',
-        0.60,
-        'Recyclé',
-        0.00,
-        NULL,
-        4,
-        2,
-        NULL
-    ),
-    (
-        'Meuble cassé',
-        'Hors service',
-        18.00,
-        'Recyclé',
-        0.00,
-        NULL,
-        2,
-        1,
-        NULL
-    );
+(
+    'Armoire ancienne',
+    'Bon état',
+    45.00,
+    'En rayon',
+    120.00,
+    '2025-09-15',
+    NULL,
+    1,
+    1,
+    NULL
+),
+(
+    'Secrétaire en teck',
+    'Bon état',
+    28.00,
+    'En rayon',
+    90.00,
+    '2025-11-03',
+    NULL,
+    1,
+    1,
+    NULL
+),
+(
+    'Table basse verre',
+    'Bon état',
+    15.00,
+    'En rayon',
+    40.00,
+    '2026-01-10',
+    NULL,
+    1,
+    1,
+    NULL
+),
+(
+    'Roman SF Lot',
+    'Bon état',
+    0.90,
+    'En rayon',
+    5.00,
+    '2026-02-01',
+    NULL,
+    1,
+    4,
+    NULL
+),
+(
+    'Machine à café',
+    'Bon état',
+    3.20,
+    'En rayon',
+    18.00,
+    '2026-04-15',
+    NULL,
+    2,
+    2,
+    NULL
+),
+(
+    'Canapé 2 places',
+    'Bon état',
+    35.00,
+    'En rayon',
+    80.00,
+    '2026-06-01',
+    NULL,
+    3,
+    1,
+    NULL
+),
+(
+    'BD Tintin T1',
+    'Bon état',
+    0.40,
+    'En rayon',
+    4.00,
+    '2026-07-05',
+    NULL,
+    4,
+    4,
+    NULL
+),
+(
+    'Perceuse filaire',
+    'À réparer',
+    2.30,
+    'En rayon',
+    15.00,
+    '2026-07-20',
+    NULL,
+    2,
+    7,
+    NULL
+),
+(
+    'Lampe de chevet',
+    'Bon état',
+    1.10,
+    'En rayon',
+    10.00,
+    '2026-08-01',
+    NULL,
+    3,
+    8,
+    NULL
+),
+(
+    'Robot pâtissier',
+    'Bon état',
+    6.50,
+    'En rayon',
+    50.00,
+    '2026-08-05',
+    NULL,
+    4,
+    2,
+    NULL
+),
+(
+    'Jeu Monopoly',
+    'Bon état',
+    1.00,
+    'En rayon',
+    8.00,
+    '2026-08-10',
+    NULL,
+    2,
+    5,
+    NULL
+),
+(
+    'Trieur en bois',
+    'Bon état',
+    2.00,
+    'En rayon',
+    12.00,
+    '2026-08-12',
+    NULL,
+    3,
+    1,
+    NULL
+),
+(
+    'Aspirateur sans sac',
+    'À réparer',
+    5.00,
+    'En réparation',
+    15.00,
+    '2026-07-15',
+    NULL,
+    2,
+    2,
+    NULL
+),
+(
+    'Grille-pain inox',
+    'À réparer',
+    1.40,
+    'En réparation',
+    8.00,
+    '2026-07-20',
+    NULL,
+    2,
+    2,
+    NULL
+),
+(
+    'Sèche-cheveux brûlé',
+    'Hors service',
+    0.60,
+    'Recyclé',
+    0.00,
+    '2026-06-10',
+    NULL,
+    4,
+    2,
+    NULL
+),
+(
+    'Meuble cassé',
+    'Hors service',
+    18.00,
+    'Recyclé',
+    0.00,
+    '2026-01-15',
+    NULL,
+    2,
+    1,
+    NULL
+);
 
 -- ============================================================================
 -- NIVEAU 3 : Réparations et Inscriptions
 -- ============================================================================
 
--- Réparations (exemples sur l'année 2026)
+-- Réparations
 INSERT INTO
     Reparation (
         reparation_date_debut,
