@@ -1,7 +1,6 @@
 
-
-Readme · MD
 Adatabase · La Remise
+
 Base de données relationnelle pour La Remise, une ressourcerie associative : les objets donnés sont collectés, triés, réparés quand c'est possible, revendus à petit prix en boutique, et recyclés sinon. La base suit aussi les bénévoles, leurs compétences et les ateliers de réparation.
 
 Projet back / SQL : conception (Merise), migrations, jeu de données et requêtes métier. Postgres tourne dans Docker.
