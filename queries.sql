@@ -90,16 +90,55 @@ WHERE
     objet_statut != 'Recyclé'
 
 -- 8. Quel est le taux de présence réelle sur nos ateliers ?
-SELECT Atelier.atelier_nom,
+SELECT
+    Atelier.atelier_nom,
     COUNT(*) FILTER (
         WHERE
-            InscriptionAtelier.presence = true) * 100 / COUNT(*) AS "Taux de présence (en %)"
+            InscriptionAtelier.presence = true
+    ) * 100 / COUNT(*) AS "Taux de présence (en %)"
 FROM Atelier
     JOIN InscriptionAtelier ON Atelier.atelier_id = InscriptionAtelier.atelier_id
-GROUP BY Atelier.atelier_id, Atelier.atelier_nom
+GROUP BY
+    Atelier.atelier_id,
+    Atelier.atelier_nom
 
 -- 9. Quels bénévoles ont la compétence « électricité » et sont disponibles pour animer un atelier ?
+-- Solution 1
 SELECT Benevole.benevole_id, Personne.personne_nom, Personne.personne_prenom, Competence.competence_nom
-FROM Benevole
+FROM
+    Benevole
     JOIN Personne ON Personne.personne_id = Benevole.benevole_id
     JOIN CompetenceBenevole ON CompetenceBenevole.benevole_id = Benevole.benevole_id
+    JOIN Competence ON competence.competence_id = competencebenevole.competence_id
+WHERE
+    Competence.competence_nom = 'Électricité'
+    AND Benevole.benevole_id NOT IN (
+        SELECT benevole_id
+        FROM Atelier
+        WHERE
+            benevole_id IS NOT NULL
+    )
+
+-- Solution 2
+SELECT Benevole.benevole_id, Personne.personne_nom, Personne.personne_prenom, Competence.competence_nom
+FROM
+    Competencebenevole
+    JOIN Benevole ON Benevole.benevole_id = CompetenceBenevole.benevole_id
+    JOIN competence ON competence.competence_id = Competencebenevole.competence_id
+    JOIN personne ON personne.personne_id = Benevole.personne_id
+WHERE
+    Competence_nom = 'Électricité'
+    AND Benevole.benevole_id NOT IN (
+        SELECT benevole_id
+        FROM Atelier
+        WHERE
+            benevole_id IS NOT NULL
+    )
+
+--10. Quels objets sont en rayon depuis plus de six mois et devraient être sortis ?
+SELECT objet.objet_nom, objet.objet_statut, objet.objet_date_rayon
+FROM Objet
+WHERE
+    objet.objet_statut = 'En rayon'
+    AND Objet.objet_date_rayon <= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '6 month'
+ORDER BY objet_date_rayon ASC

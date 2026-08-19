@@ -1,5 +1,5 @@
 -- ============================================================================
--- 1. ÉNUMÉRATIONS (Types personnalisés)
+-- 1. ÉNUMÉRATIONS
 -- ============================================================================
 
 CREATE TYPE type_depot_enum AS ENUM ('Boutique', 'Domicile');
@@ -18,26 +18,22 @@ CREATE TYPE mode_paiement_enum AS ENUM ('Espèces', 'Carte', 'Chèque');
 -- NIVEAU 0 : Tables indépendantes (aucune clé étrangère)
 -------------------------------------------------------------------------------
 
--- Catégories des objets
 CREATE TABLE Categorie (
     categorie_id SERIAL PRIMARY KEY,
     categorie_nom VARCHAR(100) NOT NULL
 );
 
--- Compétences techniques
 CREATE TABLE Competence (
     competence_id SERIAL PRIMARY KEY,
     competence_nom VARCHAR(100) NOT NULL
 );
 
--- Registre des transactions de vente
 CREATE TABLE Vente (
     vente_id SERIAL PRIMARY KEY,
     vente_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     vente_mode_paiement mode_paiement_enum NOT NULL
 );
 
--- Annuaire global (Adhérents, Clients, Bénévoles)
 CREATE TABLE Personne (
     personne_id SERIAL PRIMARY KEY,
     personne_nom VARCHAR(100) NOT NULL,
@@ -50,14 +46,12 @@ CREATE TABLE Personne (
 -- NIVEAU 1 : Tables dépendant du Niveau 0 (référencent Personne)
 -------------------------------------------------------------------------------
 
--- Extension du profil Personne pour les bénévoles (relation 1:1)
 CREATE TABLE Benevole (
     benevole_id SERIAL PRIMARY KEY,
     benevole_date_inscription TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     personne_id INTEGER NOT NULL UNIQUE REFERENCES Personne (personne_id)
 );
 
--- Apports d'objets effectués par des personnes
 CREATE TABLE Depot (
     depot_id SERIAL PRIMARY KEY,
     depot_type type_depot_enum NOT NULL,
@@ -69,7 +63,6 @@ CREATE TABLE Depot (
 -- NIVEAU 2 : Tables dépendant des Niveaux 0 et 1 (Atelier, Objet, CompetenceBenevole)
 -------------------------------------------------------------------------------
 
--- Ateliers créatifs/réparation animés par un bénévole
 CREATE TABLE Atelier (
     atelier_id SERIAL PRIMARY KEY,
     atelier_nom VARCHAR(100) NOT NULL,
@@ -79,7 +72,6 @@ CREATE TABLE Atelier (
     benevole_id INTEGER NOT NULL REFERENCES Benevole (benevole_id)
 );
 
--- Objets apportés, en stock, en réparation ou vendus
 CREATE TABLE Objet (
     objet_id SERIAL PRIMARY KEY,
     objet_nom VARCHAR(100) NOT NULL,
@@ -94,7 +86,6 @@ CREATE TABLE Objet (
     vente_id INTEGER REFERENCES Vente (vente_id)
 );
 
--- Association N:N entre Bénévoles et Compétences
 CREATE TABLE CompetenceBenevole (
     competence_id INTEGER NOT NULL REFERENCES Competence (competence_id),
     benevole_id INTEGER NOT NULL REFERENCES Benevole (benevole_id),
@@ -105,7 +96,6 @@ CREATE TABLE CompetenceBenevole (
 -- NIVEAU 3 : Tables de liaison complexes et interventions
 -------------------------------------------------------------------------------
 
--- Interventions de réparation effectuées sur les objets par un bénévole
 CREATE TABLE Reparation (
     reparation_id SERIAL PRIMARY KEY,
     reparation_date_debut TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -115,7 +105,6 @@ CREATE TABLE Reparation (
     objet_id INTEGER NOT NULL REFERENCES Objet (objet_id)
 );
 
--- Inscriptions et présences des personnes aux ateliers (relation N:N)
 CREATE TABLE InscriptionAtelier (
     date_inscription TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     presence BOOLEAN NOT NULL DEFAULT FALSE,
