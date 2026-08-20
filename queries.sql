@@ -1,3 +1,7 @@
+-- ============================================================================
+-- REQUÊTES RÉCLAMÉS
+-- ============================================================================
+
 -- 1. Combien d'objets avons-nous reçus le mois dernier, et quel poids total ?
 SELECT
     COUNT(*) AS "Nombre d'objets",
