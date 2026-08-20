@@ -14,10 +14,6 @@ CREATE TYPE mode_paiement_enum AS ENUM ('Espèces', 'Carte', 'Chèque');
 -- 2. CRÉATION DES TABLES
 -- ============================================================================
 
--------------------------------------------------------------------------------
--- NIVEAU 0 : Tables indépendantes (aucune clé étrangère)
--------------------------------------------------------------------------------
-
 CREATE TABLE Categorie (
     categorie_id SERIAL PRIMARY KEY,
     categorie_nom VARCHAR(100) NOT NULL
@@ -42,10 +38,6 @@ CREATE TABLE Personne (
     personne_adherent BOOLEAN NOT NULL DEFAULT FALSE
 );
 
--------------------------------------------------------------------------------
--- NIVEAU 1 : Tables dépendant du Niveau 0 (référencent Personne)
--------------------------------------------------------------------------------
-
 CREATE TABLE Benevole (
     benevole_id SERIAL PRIMARY KEY,
     benevole_date_inscription TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -58,10 +50,6 @@ CREATE TABLE Depot (
     depot_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     personne_id INTEGER NOT NULL REFERENCES Personne (personne_id)
 );
-
--------------------------------------------------------------------------------
--- NIVEAU 2 : Tables dépendant des Niveaux 0 et 1 (Atelier, Objet, CompetenceBenevole)
--------------------------------------------------------------------------------
 
 CREATE TABLE Atelier (
     atelier_id SERIAL PRIMARY KEY,
@@ -91,10 +79,6 @@ CREATE TABLE CompetenceBenevole (
     benevole_id INTEGER NOT NULL REFERENCES Benevole (benevole_id),
     PRIMARY KEY (competence_id, benevole_id)
 );
-
--------------------------------------------------------------------------------
--- NIVEAU 3 : Tables de liaison complexes et interventions
--------------------------------------------------------------------------------
 
 CREATE TABLE Reparation (
     reparation_id SERIAL PRIMARY KEY,
